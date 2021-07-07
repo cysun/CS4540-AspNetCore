@@ -1,4 +1,5 @@
-﻿using AspNetCoreExamples.Services;
+﻿using AspNetCoreExamples.Models;
+using AspNetCoreExamples.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,24 @@ namespace AspNetCoreExamples.Controllers
         public IActionResult Index()
         {
             return View(_employeeService.GetEmployees());
+        }
+
+        public IActionResult Details(int id)
+        {
+            return View(_employeeService.GetEmployee(id));
+        }
+
+        [HttpGet]
+        public IActionResult Add()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Add(Employee employee)
+        {
+            _employeeService.AddEmployee(employee);
+            return RedirectToAction("Index");
         }
     }
 }

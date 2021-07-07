@@ -10,6 +10,36 @@ namespace AspNetCoreExamples.Services
     public interface IEmployeeService
     {
         List<Employee> GetEmployees();
+
+        Employee GetEmployee(int id);
+
+        void AddEmployee(Employee employee);
+    }
+
+    public class EmployeeService : IEmployeeService
+    {
+        private readonly AppDbContext _db;
+
+        public EmployeeService(AppDbContext db)
+        {
+            _db = db;
+        }
+
+        public List<Employee> GetEmployees()
+        {
+            return _db.Employees.ToList();
+        }
+
+        public Employee GetEmployee(int id)
+        {
+            return _db.Employees.Where(e => e.Id == id).Include(e => e.Supervisor).SingleOrDefault();
+        }
+
+        public void AddEmployee(Employee employee)
+        {
+            _db.Employees.Add(employee);
+            _db.SaveChanges();
+        }
     }
 
     public class MockEmployeeService : IEmployeeService
@@ -33,20 +63,16 @@ namespace AspNetCoreExamples.Services
         {
             return employees;
         }
-    }
 
-    public class EmployeeService : IEmployeeService
-    {
-        private readonly AppDbContext _db;
-
-        public EmployeeService(AppDbContext db)
+        public Employee GetEmployee(int id)
         {
-            _db = db;
+            return employees[id - 1];
         }
 
-        public List<Employee> GetEmployees()
+        public void AddEmployee(Employee employee)
         {
-            return _db.Employees.Include(e => e.Supervisor).ToList();
+            employee.Id = employees.Count;
+            employees.Add(employee);
         }
     }
 }
