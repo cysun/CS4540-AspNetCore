@@ -11,6 +11,8 @@ namespace AspNetCoreExamples.Models
         public int Id { get; set; }
 
         public string Name { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime DateHired { get; set; }
 
         public int? SupervisorId { get; set; }

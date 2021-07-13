@@ -14,6 +14,8 @@ namespace AspNetCoreExamples.Services
         Employee GetEmployee(int id);
 
         void AddEmployee(Employee employee);
+
+        void SaveChanges();
     }
 
     public class EmployeeService : IEmployeeService
@@ -40,6 +42,8 @@ namespace AspNetCoreExamples.Services
             _db.Employees.Add(employee);
             _db.SaveChanges();
         }
+
+        public void SaveChanges() => _db.SaveChanges();
     }
 
     public class MockEmployeeService : IEmployeeService
@@ -74,5 +78,7 @@ namespace AspNetCoreExamples.Services
             employee.Id = employees.Count;
             employees.Add(employee);
         }
+
+        public void SaveChanges() { }
     }
 }
