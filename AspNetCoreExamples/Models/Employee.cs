@@ -10,7 +10,13 @@ namespace AspNetCoreExamples.Models
     {
         public int Id { get; set; }
 
+        [Required]
         public string Name { get; set; }
+
+        [Required]
+        public string Hash { get; set; }
+
+        public bool IsAdmin { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime DateHired { get; set; }

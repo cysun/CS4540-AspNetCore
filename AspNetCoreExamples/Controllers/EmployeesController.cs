@@ -1,5 +1,6 @@
 ﻿using AspNetCoreExamples.Models;
 using AspNetCoreExamples.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -37,6 +38,7 @@ namespace AspNetCoreExamples.Controllers
         [HttpPost]
         public IActionResult Add(Employee employee)
         {
+            employee.Hash = BCrypt.Net.BCrypt.HashPassword("abcd");
             _employeeService.AddEmployee(employee);
             return RedirectToAction("Index");
         }

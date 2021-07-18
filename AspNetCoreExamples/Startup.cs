@@ -1,4 +1,5 @@
 using AspNetCoreExamples.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -28,8 +29,12 @@ namespace AspNetCoreExamples
             services.AddDbContext<AppDbContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
-            services.AddScoped<IEmployeeService, EmployeeService>();
 
+            services
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie();
+
+            services.AddScoped<IEmployeeService, EmployeeService>();
             // services.AddSingleton<IEmployeeService, MockEmployeeService>();
         }
 
@@ -46,6 +51,7 @@ namespace AspNetCoreExamples
 
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
