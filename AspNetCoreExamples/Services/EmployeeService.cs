@@ -13,6 +13,8 @@ namespace AspNetCoreExamples.Services
 
         Employee GetEmployee(int id);
 
+        Employee GetEmployee(string name);
+
         void AddEmployee(Employee employee);
 
         void SaveChanges();
@@ -36,6 +38,12 @@ namespace AspNetCoreExamples.Services
         {
             return _db.Employees.Where(e => e.Id == id).Include(e => e.Supervisor).SingleOrDefault();
         }
+
+        public Employee GetEmployee(string name)
+        {
+            return _db.Employees.Where(e => e.Name.ToUpper() == name.ToUpper()).SingleOrDefault();
+        }
+
 
         public void AddEmployee(Employee employee)
         {
@@ -71,6 +79,11 @@ namespace AspNetCoreExamples.Services
         public Employee GetEmployee(int id)
         {
             return employees[id - 1];
+        }
+
+        public Employee GetEmployee(string name)
+        {
+            return employees.Find(e => e.Name.ToUpper() == name.ToUpper());
         }
 
         public void AddEmployee(Employee employee)

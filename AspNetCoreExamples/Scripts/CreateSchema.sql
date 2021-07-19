@@ -13,7 +13,7 @@ GO
 
 CREATE TABLE [Employees] (
     [Id] int NOT NULL IDENTITY,
-    [Name] nvarchar(max) NOT NULL,
+    [Name] nvarchar(450) NOT NULL,
     [Hash] nvarchar(max) NOT NULL,
     [IsAdmin] bit NOT NULL,
     [DateHired] datetime2 NOT NULL,
@@ -23,11 +23,14 @@ CREATE TABLE [Employees] (
 );
 GO
 
+CREATE UNIQUE INDEX [IX_Employees_Name] ON [Employees] ([Name]);
+GO
+
 CREATE INDEX [IX_Employees_SupervisorId] ON [Employees] ([SupervisorId]);
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20210718181215_InitialSchema', N'5.0.7');
+VALUES (N'20210718182830_InitialSchema', N'5.0.7');
 GO
 
 COMMIT;

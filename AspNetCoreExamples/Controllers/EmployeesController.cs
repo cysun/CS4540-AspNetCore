@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreExamples.Controllers
 {
+    [Authorize]
     public class EmployeesController : Controller
     {
         private readonly IEmployeeService _employeeService;
