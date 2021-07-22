@@ -14,10 +14,12 @@ namespace AspNetCoreExamples.Controllers
     public class EmployeesController : Controller
     {
         private readonly IEmployeeService _employeeService;
+        private readonly IAuthorizationService _authorizationService;
 
-        public EmployeesController(IEmployeeService employeeService)
+        public EmployeesController(IEmployeeService employeeService, IAuthorizationService authorizationService)
         {
             _employeeService = employeeService;
+            _authorizationService = authorizationService;
         }
 
         public IActionResult Index()
@@ -25,18 +27,24 @@ namespace AspNetCoreExamples.Controllers
             return View(_employeeService.GetEmployees());
         }
 
-        public IActionResult Details(int id)
+        public async Task<IActionResult> DetailsAsync(int id)
         {
+            var authResult = await _authorizationService.AuthorizeAsync(User, id, "CanAccessEmployee");
+            if (!authResult.Succeeded)
+                return Forbid();
+
             return View(_employeeService.GetEmployee(id));
         }
 
         [HttpGet]
+        [Authorize(Policy = "IsAdmin")]
         public IActionResult Add()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Policy = "IsAdmin")]
         public IActionResult Add(Employee employee)
         {
             employee.Hash = BCrypt.Net.BCrypt.HashPassword("abcd");
@@ -45,8 +53,12 @@ namespace AspNetCoreExamples.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> EditAsync(int id)
         {
+            var authResult = await _authorizationService.AuthorizeAsync(User, id, "CanAccessEmployee");
+            if (!authResult.Succeeded)
+                return Forbid();
+
             ViewBag.Supervisors = _employeeService.GetEmployees()
                 .Where(e => e.Id != id)
                 .Select(e => new SelectListItem(e.Name, e.Id.ToString()))
@@ -55,8 +67,12 @@ namespace AspNetCoreExamples.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(int id, Employee update)
+        public async Task<IActionResult> EditAsync(int id, Employee update)
         {
+            var authResult = await _authorizationService.AuthorizeAsync(User, id, "CanAccessEmployee");
+            if (!authResult.Succeeded)
+                return Forbid();
+
             var employee = _employeeService.GetEmployee(id);
             employee.Name = update.Name;
             employee.DateHired = update.DateHired;

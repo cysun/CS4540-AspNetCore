@@ -56,5 +56,10 @@ namespace AspNetCoreExamples.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

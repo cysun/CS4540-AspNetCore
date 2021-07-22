@@ -1,6 +1,12 @@
-﻿@model List<Employee>
+﻿@inject Microsoft.AspNetCore.Authorization.IAuthorizationService authorizationService
 
-<p><a asp-controller="Employees" asp-action="Add" class="btn btn-primary">Add Employee</a></p>
+@model List<Employee>
+
+@if ((await authorizationService.AuthorizeAsync(User, null, "IsAdmin")).Succeeded)
+{
+    <p><a asp-controller="Employees" asp-action="Add" class="btn btn-primary">Add Employee</a></p>
+}
+
 <table class="table">
     <thead>
         <tr><th>Id</th><th>Name</th><th>Date Hired</th><th>Supervisor</th><th></th></tr>
@@ -11,7 +17,14 @@
             <tr>
                 <td>@employee.Id</td>
                 <td>
-                    <a asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">@employee.Name</a>
+                    @if ((await authorizationService.AuthorizeAsync(User, employee.Id, "CanAccessEmployee")).Succeeded)
+                    {
+                        <a asp-controller="Employees" asp-action="Details" asp-route-id="@employee.Id">@employee.Name</a>
+                    }
+                    else
+                    {
+                        @employee.Name
+                    }
                 </td>
                 <td>@employee.DateHired.ToString("d")</td>
                 <td>
@@ -21,8 +34,11 @@
                     }
                 </td>
                 <td>
-                    <a asp-controller="Employees" asp-action="Edit" asp-route-id="@employee.Id"
-                       class="btn btn-primary">Edit</a>
+                    @if ((await authorizationService.AuthorizeAsync(User, employee.Id, "CanAccessEmployee")).Succeeded)
+                    {
+                        <a asp-controller="Employees" asp-action="Edit" asp-route-id="@employee.Id"
+                           class="btn btn-primary">Edit</a>
+                    }
                 </td>
             </tr>
         }

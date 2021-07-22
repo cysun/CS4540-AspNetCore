@@ -1,5 +1,7 @@
+using AspNetCoreExamples.Security;
 using AspNetCoreExamples.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +35,16 @@ namespace AspNetCoreExamples
             services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("IsAdmin",
+                    policyBuilder => policyBuilder.RequireClaim("IsAdmin", "True"));
+                options.AddPolicy("CanAccessEmployee",
+                    policyBuilder => policyBuilder.AddRequirements(new CanAccessEmployeeRequirement()));
+            });
+
+            services.AddScoped<IAuthorizationHandler, CanAccessEmployeeHandler>();
 
             services.AddScoped<IEmployeeService, EmployeeService>();
             // services.AddSingleton<IEmployeeService, MockEmployeeService>();
