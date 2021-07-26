@@ -80,5 +80,12 @@ namespace AspNetCoreExamples.Controllers
             _employeeService.SaveChanges();
             return RedirectToAction("Index");
         }
+
+        public IActionResult Two(int id1, int id2)
+        {
+            var employee1 = _employeeService.GetEmployee(id1);
+            var employee2 = _employeeService.GetEmployee(id2);
+            return View((employee1, employee2));
+        }
     }
 }

@@ -69,6 +69,14 @@ namespace AspNetCoreExamples
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    name: "two",
+                    pattern: "/Two/{id1:int}/{id2:int}",
+                    defaults: new { controller = "Employees", action = "Two" });
+                endpoints.MapControllerRoute(
+                    name: "wiki",
+                    pattern: "/Wiki/{*path}",
+                    defaults: new { controller = "Wiki", action = "Index" });
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
